@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { Button } from "../../ui/button";
 import SearchInput from "./search-input";
+import ToggleMode from "./toggle-mode";
 
 const Navbar = () => {
   return (

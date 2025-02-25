@@ -1,36 +1,31 @@
-// import { Navbar } from "@/components/home/header/navbar";
 import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import React from "react";
 
-const layout = async ({ children }: { children: React.ReactNode }) => {
+const Layout = async ({ children }: { children: React.ReactNode }) => {
   const user = await currentUser();
+
   if (!user) {
-    return null;
+    return <div>Please log in to continue.</div>;
   }
-  const loggedInUser = await prisma.user.findUnique({
+
+  // Ensure the user exists in Prisma
+  let loggedInUser = await prisma.user.findUnique({
     where: { clerkUserId: user.id },
   });
+
   if (!loggedInUser) {
-    try {
-      await prisma.user.create({
-        data: {
-          name: `${user.fullName}`,
-          clerkUserId: user.id,
-          email: user.emailAddresses?.[0]?.emailAddress || "",
-          imageUrl: user.imageUrl,
-        },
-      });
-    } catch (error) {
-      console.error("Error creating user:", error);
-    }
+    loggedInUser = await prisma.user.create({
+      data: {
+        name: user.fullName || "Unknown User",
+        clerkUserId: user.id,
+        email: user.emailAddresses[0].emailAddress,
+        imageUrl: user.imageUrl || "",
+      },
+    });
   }
-  return (
-    <div>
-      {/* <Navbar /> */}
-      {children}
-    </div>
-  );
+
+  return <div>{children}</div>;
 };
 
-export default layout;
+export default Layout;

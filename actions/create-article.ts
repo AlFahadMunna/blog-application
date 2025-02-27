@@ -20,6 +20,7 @@ type CreateArticleFormState = {
 };
 
 export const createArticle = async (
+  previousState: CreateArticleFormState,
   formData: FormData
 ): Promise<CreateArticleFormState> => {
   const result = createArticleSchema.safeParse({

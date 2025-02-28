@@ -53,5 +53,8 @@ export const createArticle = async (
     };
   }
 
+  const arrayBuffer = await imageFile.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
   redirect("/dashboard");
 };
